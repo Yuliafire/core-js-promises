@@ -130,9 +130,13 @@ function getAllResult(promises) {
 }
 
 /**
- * Takes an array of promises and processes them sequentially, concatenating each resolved value into a single string.
- * The resolution order is determined by the order of the promises in the array, not by their resolution time.
- * Static methods of the Promise class are not to be used, necessitating a manual chaining approach to ensure sequential processing.
+ * Takes an array of promises and processes
+ * them sequentially, concatenating each resolved
+ *  value into a single string.
+ * The resolution order is determined by the order of
+ * the promises in the array, not by their resolution time.
+ * Static methods of the Promise class are not to be used,
+ * necessitating a manual chaining approach to ensure sequential processing.
  *
  * @param {Array<Promise<number>>} promises
  * @return {Promise<string>}
@@ -147,8 +151,21 @@ function getAllResult(promises) {
  * [promise1, promise4, promise3] => Promise.resolved('104030')
  * [promise1, promise4, promise3, promise2] => Promise.resolved('10403020')
  */
-function queuePromises(/* promises */) {
-  throw new Error('Not implemented');
+function queuePromises(promises) {
+  const createResolvedPromise = (value) => {
+    return new Promise((resolve) => {
+      resolve(value);
+    });
+  };
+
+  if (promises.length === 0) {
+    return createResolvedPromise('');
+  }
+  return promises.reduce(async (chain, promise) => {
+    const result = await chain;
+    const value = await promise;
+    return result + value;
+  }, createResolvedPromise(''));
 }
 
 module.exports = {
