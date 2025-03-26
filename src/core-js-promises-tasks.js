@@ -56,8 +56,15 @@ function getPromiseResult(source) {
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with 1
  * [Promise.reject(1), Promise.reject(2), Promise.reject(3)]    => Promise rejected
  */
-function getFirstResolvedPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+
+function getFirstResolvedPromiseResult(promises) {
+  if (!Array.isArray(promises) || promises.length === 0) {
+    return Promise.reject(new Error('No promises provided'));
+  }
+
+  return Promise.any(promises).catch(() => {
+    return Promise.reject(new Error('All promises were rejected'));
+  });
 }
 
 /**
